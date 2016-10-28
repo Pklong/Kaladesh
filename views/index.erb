@@ -1,1 +1,7 @@
-<%= @titles %>
+<% @titles.each do |title| %>
+<ul>
+  <li>
+    <%= title %>
+  </li>
+</ul>
+<% end %>
