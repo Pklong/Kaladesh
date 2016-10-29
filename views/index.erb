@@ -1,7 +1,48 @@
-<% @titles.each do |title| %>
-<ul>
-  <li>
-    <a href="<%= title[0] %>"><%= title[1] %></a>
-  </li>
-</ul>
-<% end %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Kaladesh</title>
+  </head>
+  <body>
+    <style>
+      body {
+        font-size: 10px;
+        text-align: center;
+        background-color: #ffdab9;
+      }
+      a {
+        text-decoration: none;
+        color: green;
+      }
+      a:hover {
+        text-transform: uppercase;
+      }
+      ul {
+        list-style: none;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+
+        window.onscroll = function(event) {
+          console.log(`${document.body.offsetHeight} - Y: ${window.scrollY}, Height: ${window.innerHeight}, `);
+        }
+      });
+
+    </script>
+    <% @titles.each_with_index do |title, idx| %>
+    <ul>
+      <li>
+        <a href="<%= title[0] %>">
+          <%= title[1] %>
+        </a>
+        <br />
+        <span>
+          <%= @tags[idx].map(&:downcase).join(" ") %>
+        </span>
+      </li>
+    </ul>
+    <% end %>
+  </body>
+</html>
