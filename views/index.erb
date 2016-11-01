@@ -7,13 +7,16 @@
   <body>
     <style>
       body {
-        font-size: 24px;
+        font-size: 36px;
         text-align: center;
         background-color: #ffdab9;
+        padding: 20px;
       }
       a {
         text-decoration: none;
         color: green;
+        display: block;
+        margin-bottom: 40px;
       }
       a:hover {
         text-transform: uppercase;
@@ -21,13 +24,17 @@
       ul {
         list-style: none;
       }
+
+      .hidden {
+        display: none;
+      }
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         window.requesting = false;
 
         window.onscroll = function(event) {
-          console.log(`${document.body.offsetHeight} - Y: ${window.scrollY}, Height: ${window.innerHeight}`);
+          // console.log(`${document.body.offsetHeight} - Y: ${window.scrollY}, Height: ${window.innerHeight}`);
           if (window.requesting) return null;
           if ((window.scrollY + window.innerHeight) > document.body.offsetHeight) {
             window.requesting = true;
@@ -37,31 +44,43 @@
         }
       });
       function moreArticles() {
-        const request = new XMLHttpRequest();
-        request.addEventListener("load", function() {
-          window.requesting = false;
-          const response = JSON.parse(this.responseText);
-          const articleList = document.querySelector("ul");
-          for (let i = 0; i < response.length; i++) {
-            const element = document.createElement("li");
-            element.innerHTML = response[i]["title"];
-            articleList.appendChild(element);
+        const articles = document.querySelectorAll("li.hidden")
+        if (articles.length > 0) {
+          for (let i = 0; i < 10; i++) {
+            articles[i].classList.remove("hidden");
           }
-        })
-        request.open('GET', 'http://localhost:4567/api');
-        request.send();
+          window.requesting = false;
+        } else {
+          const request = new XMLHttpRequest();
+          request.addEventListener("load", function() {
+            window.requesting = false;
+            const response = JSON.parse(this.responseText);
+            const articleList = document.querySelector("ul");
+            for (let i = 0; i < response.length; i++) {
+              const element = document.createElement("li");
+              element.innerHTML = response[i]["title"];
+              articleList.appendChild(element);
+            }
+          })
+          request.open('GET', 'http://localhost:4567/api/articles');
+          request.send();
+
+        }
       }
     </script>
     <ul>
-    <% @titles.each_with_index do |title, idx| %>
+    <% 10.times do |article_idx| %>
       <li>
-        <a href="<%= title[0] %>">
-          <%= title[1] %>
+        <a href="<%= @articles[article_idx]["url"] %>">
+          <%= @articles[article_idx]["title"] %>
         </a>
-        <br />
-        <span>
-          <%= @tags[idx].map(&:downcase).join(" ") %>
-        </span>
+      </li>
+    <% end %>
+    <% (10...30).each do |article_idx| %>
+      <li class="hidden">
+        <a href="<%= @articles[article_idx]["url"] %>">
+          <%= @articles[article_idx]["title"] %>
+        </a>
       </li>
     <% end %>
   </ul>

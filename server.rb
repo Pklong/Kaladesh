@@ -8,32 +8,10 @@ ARTICLES = "./views/articles.json"
 OVERFLOW_ARTICLES = "./views/more-articles.json"
 
 get '/' do
-
-end
-
-get '/articles' do
-  page_view = params["page"] || 1
-  file ||= JSON.parse(File.read(ARTICLES))
-
-  articles(file)
-
-  @tags = file.map do |x|
-    x["tags"].map { | y| y["name"] }
-  end
+  @articles = JSON.parse(File.read(ARTICLES))
   erb :index
 end
 
-get '/api' do
+get '/api/articles' do
   json JSON.parse(File.read(OVERFLOW_ARTICLES))
 end
-
-
-private
-  def articles(p)
-    @titles = []
-    10.times do |x|
-      title = p.shift()
-      @titles << [title["url"], title["title"]]
-    end
-    @titles
-  end
