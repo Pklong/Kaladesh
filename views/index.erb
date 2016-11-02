@@ -30,59 +30,75 @@
       }
     </style>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        window.requesting = false;
+      const requestArticles = () => {
+        const request = new XMLHttpRequest();
+        request.addEventListener("load", function() {
+          addArticles(this.responseText);
+          revealTenArticles();
+          window.requesting = false;
+        })
+        request.open('GET', 'http://localhost:4567/api/articles');
+        request.send();
+      };
 
-        window.onscroll = function(event) {
-          // console.log(`${document.body.offsetHeight} - Y: ${window.scrollY}, Height: ${window.innerHeight}`);
-          if (window.requesting) return null;
-          if ((window.scrollY + window.innerHeight) > document.body.offsetHeight) {
-            window.requesting = true;
-
-            moreArticles();
-          }
-        }
-      });
-      function moreArticles() {
+      const revealTenArticles = () => {
         const articles = document.querySelectorAll("li.hidden")
-        if (articles.length > 0) {
           for (let i = 0; i < 10; i++) {
             articles[i].classList.remove("hidden");
           }
-          window.requesting = false;
-        } else {
-          const request = new XMLHttpRequest();
-          request.addEventListener("load", function() {
-            window.requesting = false;
-            const response = JSON.parse(this.responseText);
-            const articleList = document.querySelector("ul");
-            for (let i = 0; i < response.length; i++) {
-              const element = document.createElement("li");
-              element.innerHTML = response[i]["title"];
-              articleList.appendChild(element);
-            }
-          })
-          request.open('GET', 'http://localhost:4567/api/articles');
-          request.send();
+      };
 
+      const addArticles = (data) => {
+        const articles = JSON.parse(data);
+        const articleList = document.querySelector("ul");
+
+        for (let i = 0; i < articles.length; i++) {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          const title = document.createTextNode(`${articles[i]["title"]}`);
+          a.appendChild(title);
+          a.setAttribute("href", `${articles[i]["url"]}`);
+          li.appendChild(a);
+          li.classList.add("hidden");
+          articleList.appendChild(li);
         }
       }
+
+      const once = (fn) => {
+        let called = false;
+        return () => {
+            if (called) { return; }
+            called = true;
+            fn();
+        }
+      }
+
+      const revealArticles = (fetch) => {
+        if (document.querySelector("li.hidden")) {
+          revealTenArticles();
+          window.requesting = false;
+        } else {
+          fetch();
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        window.requesting = false;
+        const fetchArticles = once(requestArticles);
+
+        window.onscroll = function(event) {
+          if (window.requesting) return null;
+
+          const scrollPos = window.innerHeight + window.scrollY;
+          const scrollBottom = document.body.offsetHeight;
+
+          if (scrollPos > scrollBottom) {
+            window.requesting = true;
+            revealArticles(fetchArticles);
+          }
+        }
+      });
     </script>
-    <ul>
-    <% 10.times do |article_idx| %>
-      <li>
-        <a href="<%= @articles[article_idx]["url"] %>">
-          <%= @articles[article_idx]["title"] %>
-        </a>
-      </li>
-    <% end %>
-    <% (10...30).each do |article_idx| %>
-      <li class="hidden">
-        <a href="<%= @articles[article_idx]["url"] %>">
-          <%= @articles[article_idx]["title"] %>
-        </a>
-      </li>
-    <% end %>
-  </ul>
+    <%= erb :articles %>
   </body>
 </html>
