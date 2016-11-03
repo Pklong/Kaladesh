@@ -82,11 +82,12 @@
         }
       };
 
+
       document.addEventListener("DOMContentLoaded", () => {
         window.requesting = false;
         const fetchArticles = once(requestArticles);
 
-        window.onscroll = function(event) {
+        const infiniteScroll = () => {
           if (window.requesting) return null;
 
           const scrollPos = window.innerHeight + window.scrollY;
@@ -97,6 +98,8 @@
             revealArticles(fetchArticles);
           }
         }
+
+        window.onscroll = infiniteScroll;
       });
     </script>
     <%= erb :articles %>
