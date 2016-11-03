@@ -4,6 +4,15 @@
     <a href="<%= @articles[article_idx]["url"] %>">
       <%= @articles[article_idx]["title"] %>
     </a>
+    <br />
+    <p>
+      <span class="words">
+        <%= @articles[article_idx]["words"] %>
+      </span> by
+      <span class="author">
+        <%= @articles[article_idx]["profile"]["last_name"] %>
+      </span>
+    </p>
   </li>
 <% end %>
 <% (10...30).each do |article_idx| %>
@@ -11,6 +20,15 @@
     <a href="<%= @articles[article_idx]["url"] %>">
       <%= @articles[article_idx]["title"] %>
     </a>
+    <br />
+    <p>
+      <span class="words">
+        <%= @articles[article_idx]["words"] %>
+      </span> by
+      <span class="author">
+        <%= @articles[article_idx]["profile"]["last_name"] %>
+      </span>
+    </p>
   </li>
   <% end %>
 </ul>
