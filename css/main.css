@@ -16,7 +16,9 @@ a:hover {
 ul {
   list-style: none;
 }
-
+span {
+  padding: 10px;
+}
 .hidden {
   display: none;
 }
