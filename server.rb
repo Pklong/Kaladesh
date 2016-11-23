@@ -4,8 +4,8 @@ require 'sinatra/json'
 require 'json'
 require 'byebug'
 
-ARTICLES = "./views/articles.json"
-OVERFLOW_ARTICLES = "./views/more-articles.json"
+ARTICLES = "./data/articles.json"
+OVERFLOW_ARTICLES = "./data/more-articles.json"
 
 get '/' do
   @articles = JSON.parse(File.read(ARTICLES))
