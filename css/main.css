@@ -1,0 +1,22 @@
+body {
+  font-size: 36px;
+  text-align: center;
+  background-color: #ffdab9;
+  padding: 20px;
+}
+a {
+  text-decoration: none;
+  color: green;
+  display: block;
+  margin-bottom: 40px;
+}
+a:hover {
+  text-transform: uppercase;
+}
+ul {
+  list-style: none;
+}
+
+.hidden {
+  display: none;
+}

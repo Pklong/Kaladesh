@@ -7,22 +7,28 @@ ARTICLES = "./data/articles.json"
 OVERFLOW_ARTICLES = "./data/more-articles.json"
 
 class App
-  attr_reader :req, :res
   def self.call(req)
     @req = Rack::Request.new(req)
     @res = Rack::Response.new
-    @articles = JSON.parse(File.read(ARTICLES))
-    raw_template = File.read("views/articles.erb")
-    bound_template = ERB.new(raw_template).result(binding)
-    top = ERB.new(File.read("views/index.erb")).result(binding)
-    @res['Content-Type'] = 'text/html'
-    @res.write(top)
-    @res.write(bound_template)
+    if @req.path == '/'
+      @articles = JSON.parse(File.read(ARTICLES))
+      index = ERB.new(File.read("views/index.erb")).result(binding)
+      @res['Content-Type'] = 'text/html'
+      @res.write(index)
+    elsif @req.path == '/api/articles'
+      json = File.read(OVERFLOW_ARTICLES)
+      @res.write(json)
+    end
     @res.finish
   end
 end
 
+app = Rack::Builder.new do
+  use Rack::Static, urls: ["/lib", "/css"]
+  run App
+end.to_app
+
 Rack::Server.start({
-  app: App,
+  app: app,
   Port:3000
 })
