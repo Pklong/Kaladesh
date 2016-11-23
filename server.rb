@@ -1,17 +1,28 @@
-require 'sinatra'
-require 'sinatra/reloader' if development?
-require 'sinatra/json'
 require 'json'
 require 'byebug'
+require 'rack'
+require 'erb'
 
 ARTICLES = "./data/articles.json"
 OVERFLOW_ARTICLES = "./data/more-articles.json"
 
-get '/' do
-  @articles = JSON.parse(File.read(ARTICLES))
-  erb :index
+class App
+  attr_reader :req, :res
+  def self.call(req)
+    @req = Rack::Request.new(req)
+    @res = Rack::Response.new
+    @articles = JSON.parse(File.read(ARTICLES))
+    raw_template = File.read("views/articles.erb")
+    bound_template = ERB.new(raw_template).result(binding)
+    top = ERB.new(File.read("views/index.erb")).result(binding)
+    @res['Content-Type'] = 'text/html'
+    @res.write(top)
+    @res.write(bound_template)
+    @res.finish
+  end
 end
 
-get '/api/articles' do
-  json JSON.parse(File.read(OVERFLOW_ARTICLES))
-end
+Rack::Server.start({
+  app: App,
+  Port:3000
+})

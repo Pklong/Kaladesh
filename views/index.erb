@@ -98,7 +98,7 @@
 
         const sorted = Array.from(articles).sort(sortWordCount);
         container.innerHTML = "";
-        
+
         for (let i = 0; i < sorted.length; i++) {
           i >= numArticles ? sorted[i].classList.add("hidden") : sorted[i].classList.remove("hidden")
           container.appendChild(sorted[i])
@@ -134,6 +134,6 @@
       });
     </script>
     <button>Words</button><button>Author</button>
-    <%= erb :articles %>
+    <!-- :articles -->
   </body>
 </html>
