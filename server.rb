@@ -10,15 +10,18 @@ class App
   def self.call(req)
     @req = Rack::Request.new(req)
     @res = Rack::Response.new
+    @res['Content-Type'] = 'text/html'
     if @req.path == '/'
       @articles = JSON.parse(File.read(ARTICLES))
-      index = ERB.new(File.read("views/index.erb")).result(binding)
-      @res['Content-Type'] = 'text/html'
-      @res.write(index)
+      response_body = ERB.new(File.read("views/index.erb")).result(binding)
     elsif @req.path == '/api/articles'
-      json = File.read(OVERFLOW_ARTICLES)
-      @res.write(json)
+      @articles = JSON.parse(File.read(OVERFLOW_ARTICLES))
+      response_body = ERB.new(File.read("views/articles.erb")).result(binding)
+    else
+      response_body = "<h1>THERE IS NOTHING HERE! FREAK OOOOUT</h1>"
+      @res.status = 404
     end
+    @res.write(response_body)
     @res.finish
   end
 end
