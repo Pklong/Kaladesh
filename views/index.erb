@@ -9,22 +9,7 @@
     <h1>Kaladesh</h1>
     <button>Words</button><button>Author</button>
     <ul>
-      <% 10.times do |article_idx| %>
-      <li>
-        <a href="<%= @articles[article_idx]["url"] %>">
-          <%= @articles[article_idx]["title"] %>
-        </a>
-        <p>
-          <span class="words">
-            <%= @articles[article_idx]["words"] %>
-          </span>
-          <span class="author">
-            <%= @articles[article_idx]["profile"]["last_name"] %>
-          </span>
-        </p>
-      </li>
-    <% end %>
-    <% (10...30).each do |article_idx| %>
+    <% (0...30).each do |article_idx| %>
       <li class="hidden">
         <a href="<%= @articles[article_idx]["url"] %>">
           <%= @articles[article_idx]["title"] %>
