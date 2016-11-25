@@ -1,5 +1,4 @@
 require 'json'
-require 'byebug'
 require 'rack'
 require 'erb'
 
